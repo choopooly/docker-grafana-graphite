@@ -2,7 +2,6 @@ FROM     ubuntu:14.04
 RUN      apt-get -y update
 RUN      apt-get -y upgrade
 
-
 # ---------------- #
 #   Installation   #
 # ---------------- #
@@ -26,7 +25,6 @@ RUN     pip install --install-option="--prefix=/var/lib/graphite" --install-opti
 RUN     pip install --install-option="--prefix=/var/lib/graphite" --install-option="--install-lib=/var/lib/graphite/webapp" graphite-web==0.9.12
 
 
-
 # --------------------------------------- #
 #   Install & Patch StatsD and Grafana    #
 # --------------------------------------- #
@@ -41,13 +39,11 @@ RUN     mkdir /src                                                              
         git checkout v0.7.2                                                                                                             &&\
         sed -i -e "s|.replace(/\[^a-zA-Z_\\\\-0-9\\\\.]/g, '');|.replace(/[^a-zA-Z_\\\\-0-9\\\\.\\\\%]/g, '');|" /src/statsd/stats.js
 
-
 # Install Grafana
-RUN 	cd /src
-RUN 	wget http://grafanarel.s3.amazonaws.com/grafana-1.9.0.tar.gz
-RUN 	tar zxvf grafana-1.9.0.tar.gz
-RUN 	mv grafana-1.9.0 grafana
-
+RUN     cd /src                                                                                                                         &&\
+        wget http://grafanarel.s3.amazonaws.com/grafana-1.9.0.tar.gz                                                                    &&\
+        tar zxvf grafana-1.9.0.tar.gz                                                                                                   &&\ 
+        mv grafana-1.9.0 grafana
 
 # ----------------- #
 #   Configuration   #
@@ -76,13 +72,10 @@ RUN     cd /var/lib/graphite/webapp/graphite && python manage.py syncdb --noinpu
 
 # Configure Grafana
 ADD     ./grafana/config.js /src/grafana/config.js
-#ADD     ./grafana/default-dashboard.json /src/grafana/dist/app/dashboards/default.json
 
 # Configure nginx and supervisord
 ADD     ./nginx/nginx.conf /etc/nginx/nginx.conf
 ADD     ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-
 
 # ---------------- #
 #   Expose Ports   #
