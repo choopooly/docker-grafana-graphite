@@ -42,19 +42,11 @@ RUN     mkdir /src                                                              
         sed -i -e "s|.replace(/\[^a-zA-Z_\\\\-0-9\\\\.]/g, '');|.replace(/[^a-zA-Z_\\\\-0-9\\\\.\\\\%]/g, '');|" /src/statsd/stats.js
 
 
-# Install & Patch Grafana
+# Install Grafana
 RUN     mkdir /src/grafana                                                                                                              &&\
         git clone https://github.com/grafana/grafana.git /src/grafana                                                                   &&\
         cd /src/grafana                                                                                                                 &&\
-        git checkout v1.7.0
-
-ADD     ./grafana/correctly-show-urlencoded-metrics.patch /src/grafana/correctly-show-urlencoded-metrics.patch
-RUN     git apply /src/grafana/correctly-show-urlencoded-metrics.patch --directory=/src/grafana                                         &&\
-        cd /src/grafana                                                                                                                 &&\
-        npm install                                                                                                                     &&\
-        npm install -g grunt-cli                                                                                                        &&\
-        grunt build 
-
+        git checkout v1.9.0
 
 
 # ----------------- #
@@ -99,12 +91,14 @@ ADD     ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Grafana
 EXPOSE  80
 
+# Carbon port
+EXPOSE  2003
+
 # StatsD UDP port
 EXPOSE  8125/udp
 
 # StatsD Management port
 EXPOSE  8126
-
 
 
 
