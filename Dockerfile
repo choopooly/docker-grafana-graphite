@@ -43,10 +43,10 @@ RUN     mkdir /src                                                              
 
 
 # Install Grafana
-RUN     mkdir /src/grafana                                                                                                              &&\
-        git clone https://github.com/grafana/grafana.git /src/grafana                                                                   &&\
-        cd /src/grafana                                                                                                                 &&\
-        git checkout v1.9.0
+RUN 	cd /src
+RUN 	wget http://grafanarel.s3.amazonaws.com/grafana-1.9.0.tar.gz
+RUN 	tar zxvf grafana-1.9.0.tar.gz
+RUN 	mv grafana-1.9.0 grafana
 
 
 # ----------------- #
@@ -75,8 +75,8 @@ RUN     chmod 0664 /var/lib/graphite/storage/graphite.db
 RUN     cd /var/lib/graphite/webapp/graphite && python manage.py syncdb --noinput
 
 # Configure Grafana
-ADD     ./grafana/config.js /src/grafana/dist/config.js
-ADD     ./grafana/default-dashboard.json /src/grafana/dist/app/dashboards/default.json
+ADD     ./grafana/config.js /src/grafana/config.js
+#ADD     ./grafana/default-dashboard.json /src/grafana/dist/app/dashboards/default.json
 
 # Configure nginx and supervisord
 ADD     ./nginx/nginx.conf /etc/nginx/nginx.conf
