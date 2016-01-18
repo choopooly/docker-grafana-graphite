@@ -84,6 +84,9 @@ ADD     ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Grafana
 EXPOSE  80
 
+# Graphite API
+EXPOSE 81
+
 # Carbon port
 EXPOSE  2003
 
